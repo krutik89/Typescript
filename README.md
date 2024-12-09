@@ -819,3 +819,238 @@ const badConfig = {
 2. **`satisfies` Keyword**:
    - Ensures a value conforms to a type without changing its inferred type.
    - Use to enforce constraints while retaining additional properties or details.
+
+# **Complete Guide to TypeScript Primitive Types**
+
+In TypeScript, **primitive types** are the basic building blocks of the type system. These include `number`, `boolean`, `string`, `undefined`, `void`, and `null`. Understanding these types is crucial for building type-safe applications.
+
+---
+
+## **1. `number`**
+
+The `number` type in TypeScript represents all numeric values, including integers and floating-point numbers.
+
+### **Examples**
+```typescript
+let age: number = 30;          // Integer
+let price: number = 99.99;     // Floating-point number
+let hex: number = 0xff;        // Hexadecimal
+let binary: number = 0b1010;   // Binary
+let octal: number = 0o744;     // Octal
+```
+
+### **Operations**
+```typescript
+const a: number = 10;
+const b: number = 20;
+const sum: number = a + b; // Addition
+const product: number = a * b; // Multiplication
+console.log(sum, product); // Outputs: 30, 200
+```
+
+### **Common Use Cases**
+- Mathematical calculations.
+- Representing numerical properties like `age`, `price`, `height`, etc.
+
+---
+
+### **Interview Questions**
+1. **What types of numbers does the `number` type in TypeScript support?**  
+   **Answer**: The `number` type supports integers, floating-point numbers, hexadecimal, binary, and octal representations.
+
+2. **What will happen if you assign a string to a variable of type `number`?**  
+   **Answer**: TypeScript will throw a compilation error.
+
+---
+
+## **2. `boolean`**
+
+The `boolean` type represents logical values: `true` or `false`.
+
+### **Examples**
+```typescript
+let isCompleted: boolean = true;
+let hasErrors: boolean = false;
+```
+
+### **Operations**
+```typescript
+const a: boolean = true;
+const b: boolean = false;
+
+console.log(a && b); // Logical AND: false
+console.log(a || b); // Logical OR: true
+console.log(!a);     // Logical NOT: false
+```
+
+### **Common Use Cases**
+- Conditional checks.
+- Flags to represent states like `isLoggedIn`, `isAdmin`, etc.
+
+---
+
+### **Interview Questions**
+1. **Can you assign `0` or `1` to a `boolean` variable in TypeScript?**  
+   **Answer**: No, TypeScript only allows `true` or `false` as boolean values.
+
+2. **What is the default value of a boolean variable in TypeScript?**  
+   **Answer**: A boolean variable is undefined unless explicitly assigned a value.
+
+---
+
+## **3. `string`**
+
+The `string` type represents textual data.
+
+### **Examples**
+```typescript
+let greeting: string = "Hello, TypeScript!";
+let name: string = 'John';
+let template: string = `Welcome, ${name}!`; // Template literals
+```
+
+### **Operations**
+```typescript
+const str1: string = "Hello";
+const str2: string = "World";
+
+console.log(str1 + " " + str2); // String concatenation: "Hello World"
+console.log(`Length: ${str1.length}`); // Access properties: "Length: 5"
+```
+
+### **Common Use Cases**
+- Representing textual information like names, messages, and content.
+- Interpolating values using template literals.
+
+---
+
+### **Interview Questions**
+1. **How do template literals differ from regular string literals?**  
+   **Answer**: Template literals allow embedded expressions and multi-line strings using backticks (\`), while regular string literals use quotes (`'` or `"`).
+
+2. **What methods are available for `string` in TypeScript?**  
+   **Answer**: Some common methods include `toUpperCase()`, `toLowerCase()`, `substring()`, `split()`, and `replace()`.
+
+---
+
+## **4. `undefined`**
+
+The `undefined` type is used when a variable is declared but not assigned a value.
+
+### **Examples**
+```typescript
+let uninitialized: undefined;
+console.log(uninitialized); // Outputs: undefined
+```
+
+### **Default Value**
+Variables that are declared but not assigned a value default to `undefined`.
+
+### **Common Use Cases**
+- Checking whether a variable has been initialized.
+- Optional parameters in functions.
+
+```typescript
+function greet(message?: string): void {
+    console.log(message); // If not passed, message is undefined
+}
+```
+
+---
+
+### **Interview Questions**
+1. **How does TypeScript handle variables of type `undefined`?**  
+   **Answer**: A variable can explicitly be declared as `undefined` or left uninitialized.
+
+2. **What is the difference between `undefined` and `null` in TypeScript?**  
+   **Answer**: `undefined` means a variable has been declared but not initialized, while `null` explicitly represents an intentional absence of value.
+
+---
+
+## **5. `void`**
+
+The `void` type is used to represent the absence of any value. It is typically used as the return type for functions that do not return anything.
+
+### **Examples**
+```typescript
+function logMessage(message: string): void {
+    console.log(message);
+}
+```
+
+### **Assigning a `void` Value**
+You cannot assign `void` values to variables, except when using `undefined` in certain cases.
+
+### **Common Use Cases**
+- Functions or methods that only perform side effects without returning a value.
+
+---
+
+### **Interview Questions**
+1. **What is the purpose of the `void` type in TypeScript?**  
+   **Answer**: It is used to indicate that a function does not return any value.
+
+2. **Can you assign a value to a `void` variable?**  
+   **Answer**: No, except `undefined` in certain contexts.
+
+---
+
+## **6. `null`**
+
+The `null` type represents the intentional absence of any object value.
+
+### **Examples**
+```typescript
+let empty: null = null;
+```
+
+### **Default Behavior**
+- By default, `null` is assignable to variables of type `any`, `unknown`, or their explicit union types (e.g., `string | null`).
+
+---
+
+### **Common Use Cases**
+- Representing the absence of a value in APIs or optional fields.
+
+```typescript
+type User = {
+    name: string;
+    age: number | null; // Age is optional
+};
+
+const user: User = {
+    name: "Alice",
+    age: null, // Indicates no age provided
+};
+```
+
+---
+
+### **Interview Questions**
+1. **What is the difference between `undefined` and `null`?**  
+   **Answer**: `undefined` means a variable has been declared but not initialized, while `null` explicitly represents no value.
+
+2. **How does `strictNullChecks` affect the usage of `null`?**  
+   **Answer**: When `strictNullChecks` is enabled, `null` is not assignable to other types unless explicitly included in their type definition.
+
+---
+
+---
+
+## **Comparison of Primitive Types**
+
+| **Type**     | **Description**                             | **Example**                                      |
+|--------------|---------------------------------------------|-------------------------------------------------|
+| `number`     | Represents numeric values.                  | `let age: number = 25;`                        |
+| `boolean`    | Represents logical `true` or `false`.       | `let isActive: boolean = true;`                |
+| `string`     | Represents textual data.                    | `let name: string = "TypeScript";`             |
+| `undefined`  | Represents an uninitialized variable.       | `let x: undefined;`                            |
+| `void`       | Represents functions that don’t return a value. | `function log(): void { console.log("Log"); }` |
+| `null`       | Represents the intentional absence of value.| `let value: null = null;`                      |
+
+---
+
+### **Key Takeaways**
+- Primitive types are fundamental in TypeScript for building type-safe applications.
+- Use `null` and `undefined` cautiously, especially with `strictNullChecks`.
+- Leverage `void` for functions that perform side effects but do not return values.
