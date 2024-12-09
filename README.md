@@ -1054,3 +1054,306 @@ const user: User = {
 - Primitive types are fundamental in TypeScript for building type-safe applications.
 - Use `null` and `undefined` cautiously, especially with `strictNullChecks`.
 - Leverage `void` for functions that perform side effects but do not return values.
+
+# **Complete Guide to TypeScript Object Types**
+
+TypeScript provides powerful tools for defining object-like structures through its object types, enabling developers to model real-world data with precision. The key object types include **interfaces**, **classes**, **enums**, **arrays**, **tuples**, and generic **objects**.
+
+---
+
+## **1. Interface**
+
+An **interface** in TypeScript defines the shape of an object. It specifies the structure, including the properties and their types.
+
+### **Defining Interfaces**
+```typescript
+interface Person {
+    name: string;
+    age: number;
+    isEmployed?: boolean; // Optional property
+}
+```
+
+### **Examples**
+#### **Basic Example**
+```typescript
+const employee: Person = {
+    name: "Alice",
+    age: 30,
+    isEmployed: true,
+};
+```
+
+#### **Using Readonly Properties**
+```typescript
+interface Car {
+    readonly make: string; // Cannot be modified
+    model: string;
+}
+
+const myCar: Car = { make: "Toyota", model: "Corolla" };
+// myCar.make = "Honda"; // Error: Cannot assign to 'make'
+```
+
+#### **Extending Interfaces**
+```typescript
+interface Animal {
+    species: string;
+}
+
+interface Dog extends Animal {
+    breed: string;
+}
+
+const myDog: Dog = {
+    species: "Canine",
+    breed: "Labrador",
+};
+```
+
+---
+
+### **Interview Questions**
+1. **What is the difference between an interface and a type alias?**  
+   **Answer**: While both can define object shapes, interfaces support declaration merging and are often preferred for defining object shapes.
+
+2. **Can interfaces have optional or readonly properties?**  
+   **Answer**: Yes, use `?` for optional properties and `readonly` for immutable properties.
+
+---
+
+## **2. Class**
+
+A **class** in TypeScript is a blueprint for creating objects. It can include properties, methods, and access modifiers like `public`, `private`, and `protected`.
+
+### **Defining a Class**
+```typescript
+class Animal {
+    name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    makeSound(): void {
+        console.log(`${this.name} is making a sound.`);
+    }
+}
+```
+
+### **Inheritance**
+```typescript
+class Dog extends Animal {
+    constructor(name: string) {
+        super(name);
+    }
+
+    makeSound(): void {
+        console.log(`${this.name} is barking.`);
+    }
+}
+
+const myDog = new Dog("Buddy");
+myDog.makeSound(); // Buddy is barking.
+```
+
+### **Access Modifiers**
+- **`public`**: Accessible anywhere.
+- **`private`**: Accessible only within the class.
+- **`protected`**: Accessible within the class and subclasses.
+
+```typescript
+class BankAccount {
+    private balance: number = 1000;
+
+    deposit(amount: number): void {
+        this.balance += amount;
+    }
+
+    getBalance(): number {
+        return this.balance;
+    }
+}
+
+const account = new BankAccount();
+account.deposit(500);
+// console.log(account.balance); // Error: 'balance' is private
+console.log(account.getBalance()); // Outputs: 1500
+```
+
+---
+
+### **Interview Questions**
+1. **What are the differences between `public`, `private`, and `protected`?**  
+   **Answer**: `public` is accessible everywhere, `private` is restricted to the class, and `protected` is accessible within the class and its subclasses.
+
+2. **What is the role of the `super` keyword in TypeScript?**  
+   **Answer**: `super` is used to call the constructor or methods of a parent class in a subclass.
+
+---
+
+## **3. Enum**
+
+Enums allow you to define a set of named constants, improving code readability and type safety.
+
+### **Defining Enums**
+```typescript
+enum Direction {
+    North,
+    South,
+    East,
+    West,
+}
+```
+
+### **Examples**
+#### **Basic Enum Usage**
+```typescript
+const move = (dir: Direction): void => {
+    console.log(`Moving ${Direction[dir]}`);
+};
+
+move(Direction.North); // Outputs: Moving North
+```
+
+#### **String Enums**
+```typescript
+enum Colors {
+    Red = "RED",
+    Green = "GREEN",
+    Blue = "BLUE",
+}
+
+const favoriteColor: Colors = Colors.Blue;
+console.log(favoriteColor); // Outputs: BLUE
+```
+
+---
+
+### **Interview Questions**
+1. **What are the advantages of using enums in TypeScript?**  
+   **Answer**: Enums improve code readability, prevent magic numbers, and provide type-safe named constants.
+
+2. **What is the difference between numeric and string enums?**  
+   **Answer**: Numeric enums map values to numbers (default or custom), while string enums map values to specific strings.
+
+---
+
+## **4. Array**
+
+An **array** in TypeScript is a collection of values of the same type.
+
+### **Defining Arrays**
+```typescript
+let numbers: number[] = [1, 2, 3, 4];
+let strings: Array<string> = ["a", "b", "c"];
+```
+
+### **Examples**
+#### **Basic Array Operations**
+```typescript
+const fruits: string[] = ["apple", "banana"];
+fruits.push("cherry");
+console.log(fruits); // Outputs: ['apple', 'banana', 'cherry']
+```
+
+#### **Using Readonly Arrays**
+```typescript
+const readonlyFruits: readonly string[] = ["apple", "banana"];
+// readonlyFruits.push("cherry"); // Error: Cannot push to readonly array
+```
+
+---
+
+### **Interview Questions**
+1. **How do you define a readonly array in TypeScript?**  
+   **Answer**: Use `readonly` before the array type (`readonly string[]`).
+
+2. **Can an array in TypeScript contain multiple types?**  
+   **Answer**: Yes, use a union type or `any[]`.
+
+---
+
+## **5. Tuple**
+
+A **tuple** is a fixed-size array with specific types for each element.
+
+### **Defining Tuples**
+```typescript
+let tuple: [string, number];
+tuple = ["age", 25]; // Valid
+// tuple = [25, "age"]; // Error: Type 'number' is not assignable to type 'string'
+```
+
+### **Examples**
+#### **Using Tuples**
+```typescript
+const person: [string, number] = ["Alice", 30];
+const [name, age] = person;
+console.log(name, age); // Outputs: Alice, 30
+```
+
+#### **Optional Tuple Elements**
+```typescript
+let optionalTuple: [string, number?];
+optionalTuple = ["Alice"];
+```
+
+---
+
+### **Interview Questions**
+1. **What is the difference between an array and a tuple?**  
+   **Answer**: Arrays can contain elements of the same type with no fixed length, while tuples have a fixed length with specific types for each element.
+
+2. **How do you access elements of a tuple in TypeScript?**  
+   **Answer**: Access tuple elements using array indexing (`tuple[0]`).
+
+---
+
+## **6. Object**
+
+The `object` type represents non-primitive values such as arrays, functions, or objects.
+
+### **Defining Objects**
+```typescript
+let user: { name: string; age: number } = { name: "John", age: 25 };
+```
+
+### **Examples**
+#### **Object with Optional Properties**
+```typescript
+let book: { title: string; author?: string } = { title: "TypeScript Handbook" };
+```
+
+#### **Index Signatures**
+```typescript
+interface Dictionary {
+    [key: string]: string;
+}
+
+const dict: Dictionary = { hello: "world", welcome: "home" };
+```
+
+---
+
+### **Interview Questions**
+1. **What is the `object` type in TypeScript?**  
+   **Answer**: It represents non-primitive values like arrays, functions, or custom objects.
+
+2. **How do you define an object with optional properties?**  
+   **Answer**: Use the `?` syntax for optional properties.
+
+---
+
+---
+
+### **Comparison Table**
+
+| **Type**     | **Description**                                                                                      | **Example**                                |
+|--------------|------------------------------------------------------------------------------------------------------|--------------------------------------------|
+| Interface    | Defines the structure of an object.                                                                 | `interface Person { name: string; }`      |
+| Class        | A blueprint for creating objects with properties and methods.                                        | `class Animal { name: string; }`          |
+| Enum         | Defines a set of named constants.                                                                    | `enum Colors { Red, Green }`              |
+| Array        | Represents a collection of elements of the same type.                                                | `let arr: number[] = [1, 2, 3];`          |
+| Tuple        | Represents a fixed-size array with specific types for each element.                                  | `let tuple: [string, number] = ["a", 1];` |
+| Object       | Represents a non-primitive value.                                                                    | `let obj: { name: string; } = { name: ""}`|
