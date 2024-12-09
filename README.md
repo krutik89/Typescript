@@ -1357,3 +1357,226 @@ const dict: Dictionary = { hello: "world", welcome: "home" };
 | Array        | Represents a collection of elements of the same type.                                                | `let arr: number[] = [1, 2, 3];`          |
 | Tuple        | Represents a fixed-size array with specific types for each element.                                  | `let tuple: [string, number] = ["a", 1];` |
 | Object       | Represents a non-primitive value.                                                                    | `let obj: { name: string; } = { name: ""}`|
+
+
+# **Complete Guide to TypeScript: Top Types and Bottom Types**
+
+In TypeScript, **top types** and **bottom types** represent the bounds of the type hierarchy. These types play a critical role in type safety and expressiveness within TypeScript's type system.
+
+---
+
+## **1. Top Types**
+
+### **Definition**  
+- **Top types** are the "widest" types in TypeScript's hierarchy.
+- They can hold values of any type.
+- The two primary top types are:
+  - **`unknown`**: The type-safe top type.
+  - **`any`**: The unsound top type that disables type checking.
+
+---
+
+### **1a. `unknown`**
+
+The `unknown` type represents any value, but unlike `any`, you cannot directly operate on it without narrowing its type.
+
+#### **Key Features**
+- Safer than `any`.
+- Requires type checks before usage.
+- Suitable for values whose types are not known at compile time.
+
+#### **Examples**
+
+##### **Example 1: Declaring `unknown`**
+```typescript
+let value: unknown;
+
+value = "Hello"; // Valid
+value = 42;      // Valid
+value = true;    // Valid
+```
+
+##### **Example 2: Type Narrowing**
+```typescript
+function handleInput(input: unknown): void {
+    if (typeof input === "string") {
+        console.log(input.toUpperCase()); // Allowed after narrowing
+    } else {
+        console.log("Input is not a string.");
+    }
+}
+
+handleInput("Hello"); // Outputs: HELLO
+handleInput(42);      // Outputs: Input is not a string.
+```
+
+##### **Example 3: Type Guards with `instanceof`**
+```typescript
+function processValue(value: unknown): void {
+    if (value instanceof Date) {
+        console.log(value.toISOString()); // Allowed after narrowing
+    } else {
+        console.log("Not a date.");
+    }
+}
+
+processValue(new Date()); // Outputs the ISO string
+processValue("Hello");    // Outputs: Not a date.
+```
+
+---
+
+#### **Interview Questions**
+1. **What is the difference between `unknown` and `any` in TypeScript?**  
+   **Answer**: Both can hold values of any type, but `unknown` requires explicit type checks before operations, making it safer than `any`.
+
+2. **When should you use `unknown` over `any`?**  
+   **Answer**: Use `unknown` when you want to enforce type safety and require explicit checks before using the value.
+
+---
+
+### **1b. `any`**
+
+The `any` type represents a value that can bypass all type checks. It disables TypeScript's type safety, making it the least restrictive type.
+
+#### **Key Features**
+- Assignable to and from any type.
+- Operations on `any` bypass compile-time checks.
+- Useful for gradual migration or working with untyped third-party libraries.
+
+#### **Examples**
+
+##### **Example 1: Declaring `any`**
+```typescript
+let value: any;
+
+value = "Hello"; // Valid
+value = 42;      // Valid
+value = {};      // Valid
+```
+
+##### **Example 2: No Type Checking**
+```typescript
+let input: any = "Hello";
+
+console.log(input.toUpperCase()); // No type error, but risky if `input` changes
+input = 42;
+console.log(input.toUpperCase()); // Runtime error: toUpperCase is not a function
+```
+
+##### **Example 3: Mixing Types**
+```typescript
+let mixed: any = [1, "two", true];
+console.log(mixed[1]); // Outputs: two
+```
+
+---
+
+#### **Risks of `any`**
+- Removes type safety.
+- Increases the likelihood of runtime errors.
+
+---
+
+#### **Interview Questions**
+1. **What is the primary disadvantage of using `any` in TypeScript?**  
+   **Answer**: It disables type checking, leading to potential runtime errors and negating the benefits of TypeScript's type system.
+
+2. **When should you use `any` in TypeScript?**  
+   **Answer**: Use it sparingly, typically when dealing with untyped libraries or during the gradual migration of JavaScript codebases.
+
+---
+
+---
+
+## **2. Bottom Types**
+
+### **Definition**  
+- **Bottom types** are the "narrowest" types in TypeScript's hierarchy.
+- They represent values that can never occur.
+- The primary bottom type is **`never`**.
+
+---
+
+### **2a. `never`**
+
+The `never` type represents values that never occur. It is used to indicate unreachable code or impossible states.
+
+#### **Key Features**
+- A function that never returns (e.g., throws an error or infinite loops) returns `never`.
+- Can be used for exhaustive type checking in switch cases.
+- Cannot be assigned any value.
+
+#### **Examples**
+
+##### **Example 1: Functions That Throw Errors**
+```typescript
+function throwError(message: string): never {
+    throw new Error(message);
+}
+```
+
+##### **Example 2: Infinite Loops**
+```typescript
+function infiniteLoop(): never {
+    while (true) {
+        console.log("Looping forever...");
+    }
+}
+```
+
+##### **Example 3: Exhaustive Checks**
+```typescript
+type Shape = { kind: "circle"; radius: number } | { kind: "square"; side: number };
+
+function getArea(shape: Shape): number {
+    switch (shape.kind) {
+        case "circle":
+            return Math.PI * shape.radius ** 2;
+        case "square":
+            return shape.side ** 2;
+        default:
+            // Ensures all cases are handled
+            const _exhaustiveCheck: never = shape;
+            throw new Error("Unhandled case: " + _exhaustiveCheck);
+    }
+}
+```
+
+---
+
+#### **When to Use `never`**
+- Define functions that never return.
+- Use in unreachable code paths.
+- Enforce exhaustive checks in discriminated unions.
+
+---
+
+#### **Interview Questions**
+1. **What is the `never` type in TypeScript?**  
+   **Answer**: It represents a type that contains no values, used for functions that never return or code paths that cannot be executed.
+
+2. **How is `never` different from `void`?**  
+   **Answer**: `void` represents functions that return no value, while `never` represents functions that do not return at all (e.g., throw errors or infinite loops).
+
+3. **Why is `never` useful for exhaustive type checks?**  
+   **Answer**: It ensures that all possible cases in a discriminated union are handled, improving type safety.
+
+---
+
+---
+
+## **Comparison of Top and Bottom Types**
+
+| **Type**   | **Category** | **Description**                                                                 |
+|------------|--------------|---------------------------------------------------------------------------------|
+| `unknown`  | Top Type     | Represents any value but requires type checks before operations.                |
+| `any`      | Top Type     | Represents any value without type checking, disabling type safety.              |
+| `never`    | Bottom Type  | Represents values that never occur, used for unreachable code or exhaustive checks. |
+
+---
+
+### **Key Takeaways**
+1. Use **`unknown`** for safe handling of values with unknown types.
+2. Use **`any`** sparingly to avoid losing type safety.
+3. Use **`never`** to model unreachable code and ensure exhaustive type checking.
