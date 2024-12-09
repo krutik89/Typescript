@@ -1580,3 +1580,166 @@ function getArea(shape: Shape): number {
 1. Use **`unknown`** for safe handling of values with unknown types.
 2. Use **`any`** sparingly to avoid losing type safety.
 3. Use **`never`** to model unreachable code and ensure exhaustive type checking.
+
+# **Complete Guide to TypeScript: Type Inference**
+
+TypeScript uses **type inference** to automatically determine the type of a variable or expression without requiring explicit type annotations. This feature helps reduce verbosity while maintaining type safety.
+
+---
+
+## **What is Type Inference?**
+
+Type inference is the ability of TypeScript to deduce the type of a variable, parameter, or return value based on the context. TypeScript infers types when:
+1. A variable is initialized.
+2. A default value is assigned to a function parameter.
+3. A function's return type is derived from its return statement.
+
+---
+
+## **Examples of Type Inference**
+
+### **1. Variable Initialization**
+When you assign a value to a variable, TypeScript infers its type.
+
+```typescript
+let count = 42; // TypeScript infers `count` as `number`
+// count = "forty-two"; // Error: Type 'string' is not assignable to type 'number'
+
+const greeting = "Hello, TypeScript!"; // Inferred as `string`
+```
+
+---
+
+### **2. Function Return Types**
+The return type of a function is inferred from its return statements.
+
+```typescript
+function add(a: number, b: number) {
+    return a + b; // TypeScript infers return type as `number`
+}
+
+const sum = add(5, 10); // `sum` is inferred as `number`
+```
+
+---
+
+### **3. Array Inference**
+The type of an array is inferred based on its elements.
+
+```typescript
+const numbers = [1, 2, 3]; // Inferred as `number[]`
+const mixed = [1, "two", true]; // Inferred as `(number | string | boolean)[]`
+```
+
+---
+
+### **4. Default Parameters**
+When default values are provided for function parameters, TypeScript infers their types.
+
+```typescript
+function greet(message = "Hello"): string {
+    return message.toUpperCase(); // Return type inferred as `string`
+}
+```
+
+---
+
+### **5. Contextual Typing**
+Type inference works based on the context in which a value is used, such as in event handlers or callbacks.
+
+```typescript
+const button = document.querySelector("button");
+button?.addEventListener("click", (event) => {
+    console.log(event.target); // `event` is inferred as `MouseEvent`
+});
+```
+
+---
+
+### **6. Type Assertions**
+When you assert a type, you override the inference system to specify a more specific type.
+
+```typescript
+const value = "42" as unknown; // Inferred as `unknown`
+const numericValue = value as string; // Asserted as `string`
+```
+
+---
+
+## **Advanced Type Inference Features**
+
+### **1. Best Common Type**
+When inferring the type of an array or union, TypeScript determines the "best common type."
+
+```typescript
+const values = [1, "hello", true]; // Inferred as `(number | string | boolean)[]`
+```
+
+### **2. Return Type Inference in Callbacks**
+TypeScript infers the return type of a callback function based on its context.
+
+```typescript
+const numbers = [1, 2, 3];
+const doubled = numbers.map((num) => num * 2); // Inferred as `number[]`
+```
+
+---
+
+## **When Explicit Types Are Needed**
+
+### **1. Ambiguity in Inference**
+Explicit types are required when TypeScript cannot determine the type accurately.
+
+```typescript
+let value; // Inferred as `any`
+value = 42;
+value = "hello";
+```
+
+Solution:
+```typescript
+let value: string;
+value = "hello"; // Type-safe assignment
+```
+
+---
+
+### **2. Function Return Types in Complex Scenarios**
+Explicit return types are necessary when the return type is ambiguous or needs to be more specific.
+
+```typescript
+function fetchData(): Promise<string> {
+    return new Promise((resolve) => resolve("Data loaded")); // Explicit return type
+}
+```
+
+---
+
+## **Interview Questions**
+
+### **Basic Questions**
+1. **What is type inference in TypeScript?**  
+   **Answer**: Type inference is TypeScript’s ability to automatically deduce the type of a variable, parameter, or return value based on its usage or initialization.
+
+2. **What is contextual typing in TypeScript?**  
+   **Answer**: Contextual typing is when TypeScript infers types based on the context, such as event listeners or callbacks.
+
+---
+
+### **Advanced Questions**
+1. **How does TypeScript infer the type of an array with mixed elements?**  
+   **Answer**: TypeScript infers the type as a union of all possible element types in the array.
+
+2. **When should you use explicit types instead of relying on type inference?**  
+   **Answer**: Use explicit types when inference results in ambiguity, such as uninitialized variables or complex return types.
+
+3. **What is the "best common type" in TypeScript?**  
+   **Answer**: The best common type is the shared type among elements in an array or union, used by TypeScript for inference.
+
+---
+
+## **Key Takeaways**
+1. Type inference reduces verbosity while maintaining type safety.
+2. TypeScript infers types based on initial values, return statements, or usage contexts.
+3. Use explicit types in cases of ambiguity or for more precise control.
+
