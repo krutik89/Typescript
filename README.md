@@ -1743,3 +1743,273 @@ function fetchData(): Promise<string> {
 2. TypeScript infers types based on initial values, return statements, or usage contexts.
 3. Use explicit types in cases of ambiguity or for more precise control.
 
+# **Complete Guide to TypeScript: Type Compatibility**
+
+TypeScript's **type compatibility** system determines whether a type can be assigned to another type. It is a core feature of TypeScript's structural type system, which ensures flexibility and type safety.
+
+---
+
+## **What is Type Compatibility?**
+
+Type compatibility in TypeScript is based on **structural typing**, meaning compatibility is determined by comparing the structure (properties and methods) of two types rather than their explicit declarations.  
+
+For example:
+```typescript
+interface Point {
+    x: number;
+    y: number;
+}
+
+const point: Point = { x: 10, y: 20 }; // Compatible
+```
+
+---
+
+## **1. Basic Type Compatibility**
+
+### **Example: Primitive Types**
+Primitive types are compatible if they match exactly.
+
+```typescript
+let num: number = 42;
+let anotherNum: number = num; // Compatible
+
+let str: string = "Hello";
+// str = num; // Error: Type 'number' is not assignable to type 'string'
+```
+
+### **Example: Object Compatibility**
+Object types are compatible if the source type has all the properties required by the target type.
+
+```typescript
+interface Named {
+    name: string;
+}
+
+let person = { name: "Alice", age: 30 };
+let namedPerson: Named = person; // Compatible because 'person' has 'name'
+```
+
+---
+
+## **2. Function Compatibility**
+
+Functions are compatible if their parameters and return types are compatible.
+
+### **Parameter Compatibility**
+- A function can have more parameters than required, but not fewer.
+```typescript
+type Func = (a: number, b: number) => void;
+
+const fn1: Func = (a, b) => console.log(a + b); // Compatible
+const fn2: Func = (a) => console.log(a); // Error: Parameter 'b' is missing
+```
+
+### **Return Type Compatibility**
+- Return types must be compatible for the function to be assignable.
+```typescript
+type Add = (a: number, b: number) => number;
+
+const adder: Add = (a, b) => a + b; // Compatible
+const wrongAdder: Add = (a, b) => `${a + b}`; // Error: Type 'string' is not assignable to type 'number'
+```
+
+---
+
+## **3. Interface and Class Compatibility**
+
+### **Interface Compatibility**
+Two interfaces are compatible if one has a superset of the properties of the other.
+
+```typescript
+interface Bird {
+    wings: number;
+}
+
+interface Sparrow extends Bird {
+    chirp: () => void;
+}
+
+let bird: Bird = { wings: 2 };
+let sparrow: Sparrow = { wings: 2, chirp: () => console.log("Chirp") };
+
+bird = sparrow; // Compatible
+// sparrow = bird; // Error: Property 'chirp' is missing
+```
+
+### **Class Compatibility**
+Class instances are compatible based on their structure, not their declarations.
+
+```typescript
+class Point {
+    x: number;
+    y: number;
+}
+
+class ColoredPoint {
+    x: number;
+    y: number;
+    color: string;
+}
+
+let point: Point = new Point();
+let coloredPoint: ColoredPoint = { x: 10, y: 20, color: "red" };
+
+point = coloredPoint; // Compatible
+// coloredPoint = point; // Error: Property 'color' is missing
+```
+
+---
+
+## **4. Covariance and Contravariance**
+
+### **Covariance (Output)**
+Return types can be a subtype of the target type.
+
+```typescript
+interface Animal {
+    name: string;
+}
+
+interface Dog extends Animal {
+    breed: string;
+}
+
+let animalGetter: () => Animal;
+let dogGetter: () => Dog;
+
+animalGetter = dogGetter; // Compatible (Covariant)
+```
+
+### **Contravariance (Input)**
+Parameter types can be a supertype of the target type.
+
+```typescript
+let printAnimal: (animal: Animal) => void;
+let printDog: (dog: Dog) => void;
+
+printDog = printAnimal; // Compatible (Contravariant)
+```
+
+---
+
+## **5. Generics Compatibility**
+
+Generics in TypeScript are compatible if their structure aligns.
+
+### **Example: Simple Generic Compatibility**
+```typescript
+interface Box<T> {
+    value: T;
+}
+
+let stringBox: Box<string> = { value: "Hello" };
+let numberBox: Box<number> = { value: 42 };
+
+// stringBox = numberBox; // Error: Type 'Box<number>' is not assignable to type 'Box<string>'
+```
+
+### **Example: Covariance with Generics**
+```typescript
+interface Container<T> {
+    contents: T;
+}
+
+let animalContainer: Container<Animal>;
+let dogContainer: Container<Dog>;
+
+// animalContainer = dogContainer; // Error: Type 'Dog' is not assignable to type 'Animal'
+```
+
+---
+
+## **6. Union and Intersection Compatibility**
+
+### **Union Compatibility**
+Union types are compatible if the value matches one of the types in the union.
+
+```typescript
+type StringOrNumber = string | number;
+
+let value: StringOrNumber;
+value = 42; // Compatible
+value = "Hello"; // Compatible
+// value = true; // Error: Type 'boolean' is not assignable
+```
+
+### **Intersection Compatibility**
+Intersection types require the value to satisfy all combined types.
+
+```typescript
+type Named = { name: string };
+type Age = { age: number };
+
+type Person = Named & Age;
+
+const person: Person = { name: "Alice", age: 30 }; // Compatible
+```
+
+---
+
+## **7. Special Cases**
+
+### **Compatibility with `any`**
+The `any` type is compatible with all types.
+
+```typescript
+let value: any;
+value = 42; // Compatible
+value = "Hello"; // Compatible
+```
+
+### **Compatibility with `unknown`**
+The `unknown` type is assignable to no types except `unknown` and `any`.
+
+```typescript
+let unknownValue: unknown;
+// let str: string = unknownValue; // Error: Type 'unknown' is not assignable to type 'string'
+
+unknownValue = "Hello"; // Compatible
+```
+
+### **Compatibility with `never`**
+The `never` type is not assignable to any type, but all types are assignable to `never`.
+
+```typescript
+let neverValue: never;
+// neverValue = 42; // Error: Type '42' is not assignable to type 'never'
+```
+
+---
+
+## **Interview Questions**
+
+### **Basic Questions**
+1. **What is structural typing in TypeScript?**  
+   **Answer**: Structural typing determines compatibility based on the structure of types rather than their declarations.
+
+2. **How does TypeScript handle compatibility between two objects?**  
+   **Answer**: An object is compatible if it has all the required properties of the target type, even if it has additional properties.
+
+---
+
+### **Advanced Questions**
+1. **What is covariance and contravariance in TypeScript?**  
+   **Answer**:  
+   - Covariance applies to output types (e.g., return types can be a subtype).  
+   - Contravariance applies to input types (e.g., parameter types can be a supertype).
+
+2. **How does compatibility differ between `any` and `unknown`?**  
+   **Answer**:  
+   - `any` is compatible with all types and can be assigned to or from any type.  
+   - `unknown` is not assignable to other types without explicit narrowing or type assertion.
+
+3. **What happens when assigning a union type to another type?**  
+   **Answer**: The assignment is valid if the value matches one of the types in the union.
+
+---
+
+### **Key Takeaways**
+1. TypeScript uses structural typing for type compatibility.
+2. Functions are compatible if their parameters and return types align.
+3. Top types (`any`, `unknown`) and bottom types (`never`) behave differently in compatibility scenarios.
